@@ -17,16 +17,20 @@ import org.springframework.stereotype.Service;
 import com.app.aforo255.seguridad.dao.UsuarioDao;
 import com.app.aforo255.seguridad.models.entity.Usuario;
 
+import brave.Tracer;
+
 @Service
 public class UsuarioService implements UserDetailsService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UsuarioService.class);
 	private @Autowired UsuarioDao usuarioDao;
+	private @Autowired Tracer tracer;
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		Usuario usuario = usuarioDao.findByUsername(username);
 		if(usuario == null) {
+			tracer.currentSpan().tag("error.message", "Error login");
 			throw new UsernameNotFoundException("Usuario no encontrado.");
 		} 
 		List<GrantedAuthority> authorities = usuario.getRoles().stream()

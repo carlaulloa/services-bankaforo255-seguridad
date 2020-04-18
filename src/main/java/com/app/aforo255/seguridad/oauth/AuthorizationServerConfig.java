@@ -3,6 +3,7 @@ package com.app.aforo255.seguridad.oauth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -17,7 +18,7 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 @EnableAuthorizationServer
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 	
-	//private @Autowired Environment env;
+	private @Autowired Environment env;
 	private @Autowired BCryptPasswordEncoder passwordEncoder;
 	private @Autowired AuthenticationManager authenticationManager;
 
@@ -29,8 +30,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-		clients.inMemory().withClient("webAngular")
-			.secret(this.passwordEncoder.encode("123456"))
+		clients.inMemory().withClient(this.env.getProperty("config.security.oauth.client.id"))
+			.secret(this.passwordEncoder.encode(this.env.getProperty("config.security.oauth.client.secret")))
 			.scopes("read","write")
 			.authorizedGrantTypes("password","refresh_token")
 			.accessTokenValiditySeconds(3600)
@@ -52,7 +53,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	@Bean
 	public JwtAccessTokenConverter accessTokenConverter() {
 		JwtAccessTokenConverter jwtAccessTokenConverter = new JwtAccessTokenConverter();
-		jwtAccessTokenConverter.setSigningKey("aforo255");
+		jwtAccessTokenConverter.setSigningKey(this.env.getProperty("config.security.oauth.jwt.key"));
 		return jwtAccessTokenConverter;
 	}
 	
