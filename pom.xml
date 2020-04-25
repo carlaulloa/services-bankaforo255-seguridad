@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.app.aforo255.seguridad</groupId>
-	<artifactId>servuces-bankaforo255-seguridad</artifactId>
+	<artifactId>services-bankaforo255-seguridad</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>servuces-bankaforo255-seguridad</name>
+	<name>services-bankaforo255-seguridad</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
